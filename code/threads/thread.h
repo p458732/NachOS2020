@@ -110,7 +110,10 @@ class Thread {
     char* getName() { return (name); }
     void Print() { cout << name; }
     void SelfTest();		// test whether thread impl is working
-
+    int realBurstTime = 0;
+    int waitTime = 0;
+    int lastTime = 0;
+    int hasInsert = 0;
   private:
     // some of the private data for this class is listed above
     

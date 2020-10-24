@@ -61,7 +61,7 @@ class List {
     				// how many items in the list?
     bool IsEmpty() { return (numInList == 0); };
     				// is the list empty? 
-
+    T iter(int remainTime);
     void Apply(void (*f)(T)) const; 
     				// apply function to all elements in list
 

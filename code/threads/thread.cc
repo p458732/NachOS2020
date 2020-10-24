@@ -150,7 +150,8 @@ Thread::Begin ()
 {
     ASSERT(this == kernel->currentThread);
     DEBUG(dbgThread, "Beginning thread: " << name);
-    
+
+    cout<<getName()<<"begin Time :"<<kernel->stats->totalTicks<<"\n";    
     kernel->scheduler->CheckToBeDestroyed();
     kernel->interrupt->Enable();
 }
@@ -177,7 +178,13 @@ Thread::Finish ()
     ASSERT(this == kernel->currentThread);
     
     DEBUG(dbgThread, "Finishing thread: " << name);
-    
+    realBurstTime += kernel->stats->totalTicks- kernel->currentThread->lastTime;
+	
+	cout<<getName()<<"finish Time :"<<kernel->stats->totalTicks<<"\n"; 
+    cout<<getName()<<" burstTime is "<<realBurstTime<<endl;
+
+    lastTime = kernel->stats->totalTicks;
+    kernel->scheduler->waitTimeArr.push_back(waitTime); 
     Sleep(TRUE);				// invokes SWITCH
     // not reached
 }
@@ -209,10 +216,15 @@ Thread::Yield ()
     ASSERT(this == kernel->currentThread);
     
     DEBUG(dbgThread, "Yielding thread: " << name);
-    
-    nextThread = kernel->scheduler->FindNextToRun();
-    if (nextThread != NULL) {
+    if(kernel->scheduler->getSchedulerType() == SRTF){
 	kernel->scheduler->ReadyToRun(this);
+	nextThread = kernel->scheduler->FindSRTFNextToRun(1);	
+}    
+   else nextThread = kernel->scheduler->FindNextToRun();
+    if (nextThread != NULL) {
+	Scheduler *scheduler = kernel->scheduler;
+	//cout<< "??????????????????????/"<<kernel->scheduler->getSchedulerType()<<"\n";
+	if(kernel->scheduler->getSchedulerType() != SRTF)kernel->scheduler->ReadyToRun(this);
 	kernel->scheduler->Run(nextThread, FALSE);
     }
     (void) kernel->interrupt->SetLevel(oldLevel);
@@ -434,7 +446,7 @@ Thread::SelfTest()
     
     const int number 	 = 3;
     char *name[number] 	 = {"A", "B", "C"};
-    int burst[number] 	 = {3, 10, 4};
+    int burst[number] 	 = {8, 10, 12};
     int priority[number] = {4, 5, 3};
 
     Thread *t;

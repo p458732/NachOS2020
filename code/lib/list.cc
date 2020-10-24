@@ -379,3 +379,26 @@ SortedList<T>::SelfTest(T *p, int numEntries)
 
      delete q;
 }
+//------------------------------------------------------------
+template <class T>
+T
+List<T>::iter(int remainTime)
+{ 
+    ListElement<T> *ptr;
+    ListElement<T>* temp;
+    T thing ;
+    int min = 0;
+    for (ptr = first; ptr != NULL; ptr = ptr->next) {
+        if(min<ptr->item->getBurstTime()&&ptr->item->hasInsert==0){
+		ptr->item->hasInsert = 1;
+		min = ptr->item->getBurstTime();
+		temp = ptr;
+	}
+    }
+    thing = temp->item;
+    Remove(temp->item); 
+    return thing;
+
+}
+
+
