@@ -218,8 +218,8 @@ Thread::Yield ()
     DEBUG(dbgThread, "Yielding thread: " << name);
     if(kernel->scheduler->getSchedulerType() == SRTF){
 	kernel->scheduler->ReadyToRun(this);
-	//nextThread = kernel->scheduler->FindNextToRun();
-	nextThread = kernel->scheduler->FindSRTFNextToRun(1);	
+	nextThread = kernel->scheduler->FindNextToRun();
+	//nextThread = kernel->scheduler->FindSRTFNextToRun(1);	
 }    
    else nextThread = kernel->scheduler->FindNextToRun();
     if (nextThread != NULL) {

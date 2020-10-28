@@ -385,18 +385,33 @@ T
 List<T>::iter(int remainTime)
 { 
     ListElement<T> *ptr;
-    ListElement<T>* temp;
+    ListElement<T>* temp = first;
     T thing ;
-    int min = 0;
+    int min = 1000000000;
+    int flag = 1;
     for (ptr = first; ptr != NULL; ptr = ptr->next) {
-        if(min<ptr->item->getBurstTime()&&ptr->item->hasInsert==0){
+
+	
+	if(flag&&ptr->item->hasInsert==0){
 		ptr->item->hasInsert = 1;
+		flag = 0;
+	}
+	cout<<ptr->item->getName()<<" BurstTime: "<<ptr->item->getBurstTime()<< " enter: "<< ptr->item->hasInsert<< " \n";
+        if(min>ptr->item->getBurstTime()&&ptr->item->hasInsert==1){
+		
 		min = ptr->item->getBurstTime();
 		temp = ptr;
+		
+		
 	}
     }
+	
+	cout<<endl;
+
     thing = temp->item;
+
     Remove(temp->item); 
+    
     return thing;
 
 }

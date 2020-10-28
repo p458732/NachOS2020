@@ -111,8 +111,11 @@ Scheduler::ReadyToRun (Thread *thread)
     kernel->currentThread->realBurstTime += kernel->stats->totalTicks- kernel->currentThread->lastTime;
    kernel->currentThread->lastTime = kernel->stats->totalTicks;
     thread->setStatus(READY);
+    
     readyList->Append(thread);
+   
     Print();
+
 	cout<<endl;
 }
 
@@ -250,7 +253,8 @@ Scheduler::Print()
 Thread *
 Scheduler::FindSRTFNextToRun (int remainTime)
 {
-    ASSERT(kernel->interrupt->getLevel() == IntOff);
+
+    //ASSERT(kernel->interrupt->getLevel() == IntOff);
 
     if (readyList->IsEmpty()) {
 	float res = 0.0;
