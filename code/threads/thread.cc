@@ -151,7 +151,8 @@ Thread::Begin ()
     ASSERT(this == kernel->currentThread);
     DEBUG(dbgThread, "Beginning thread: " << name);
 
-    cout<<getName()<<" begin Time :"<<kernel->stats->totalTicks<<"\n";    
+    cout<<getName()<<" begin Time :"<<kernel->stats->totalTicks<<"\n";
+    hasInsert = 1;    
     kernel->scheduler->CheckToBeDestroyed();
     kernel->interrupt->Enable();
 }
@@ -216,8 +217,13 @@ Thread::Yield ()
     ASSERT(this == kernel->currentThread);
     
     DEBUG(dbgThread, "Yielding thread: " << name);
-    if(kernel->scheduler->getSchedulerType() == SRTF){
+    if(kernel->scheduler->getSchedulerType() == SRTF){		
+	realBurstTime += kernel->stats->totalTicks- kernel->currentThread->lastTime;
+	lastTime = kernel->stats->totalTicks;
+	setBurstTime(getBurstTime() - realBurstTime);
+
 	kernel->scheduler->ReadyToRun(this);
+	
 	//nextThread = kernel->scheduler->FindNextToRun();
 	nextThread = kernel->scheduler->FindSRTFNextToRun(1);	
 }    
@@ -262,9 +268,16 @@ Thread::Sleep (bool finishing)
     DEBUG(dbgThread, "Sleeping thread: " << name);
 
     status = BLOCKED;
+    if (kernel->scheduler->getSchedulerType() == SRTF)
+    {
+	while ((nextThread = kernel->scheduler->FindSRTFNextToRun(1)) == NULL)
+	kernel->interrupt->Idle();
+     }
+else{
+
     while ((nextThread = kernel->scheduler->FindNextToRun()) == NULL)
 	kernel->interrupt->Idle();	// no one to run, wait for an interrupt
-    
+}    
     // returns when it's time for us to run
     kernel->scheduler->Run(nextThread, finishing); 
 }
