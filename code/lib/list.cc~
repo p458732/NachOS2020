@@ -396,7 +396,7 @@ List<T>::iter(int remainTime)
 		ptr->item->hasInsert = 1;
 		flag = 0;
 	}
-	cout<<ptr->item->getName()<<" BurstTime: "<<ptr->item->getBurstTime()<< " enter: "<< ptr->item->hasInsert<< " \n";
+	cout<<ptr->item->getName()<<" RemainBurstTime: "<<ptr->item->getBurstTime()<< " enter: "<< ptr->item->hasInsert<< " \n";
         if(min>ptr->item->getBurstTime()&&ptr->item->hasInsert==1){
 		
 		min = ptr->item->getBurstTime();

@@ -148,7 +148,6 @@ Scheduler::FindNextToRun ()
     ASSERT(kernel->interrupt->getLevel() == IntOff);
 
     if (readyList->IsEmpty()) {
-	//readyList 空的表示已經沒有thread要執行 所以可以計算平均等待時間並輸出
 	float res = 0.0;
 	for(int i =0 ;i < waitTimeArr.size(); i++)
 	{
@@ -156,7 +155,6 @@ Scheduler::FindNextToRun ()
 		res+=waitTimeArr[i];
 	}
 	cout<<endl;
-	//waitTimeArr.size()-1 是因為要扣掉main函式 單純只計算使用者的程式
 	cout<<"Average Waiting Time : "<< res/(waitTimeArr.size()-1)<<endl;
 	return NULL;
     } else {
@@ -207,12 +205,7 @@ Scheduler::Run (Thread *nextThread, bool finishing)
 
     kernel->currentThread = nextThread;  // switch to the next thread
     nextThread->setStatus(RUNNING);      // nextThread is now running
-
-    //這邊我們假設當thread進入到run的時候代表他剛才在ready
-    //因為我們用lastTime紀錄上一次被設成ready的時間,所以在這邊我們要加的時間
-    //就便成是目前kernel的時間 減去 lastTime
    kernel->currentThread->waitTime += kernel->stats->totalTicks- kernel->currentThread->lastTime;
-    //紀錄目前kernel的時間 為了等等計算Burst time 做使用
    kernel->currentThread->lastTime = kernel->stats->totalTicks;  
     DEBUG(dbgThread, "Switching from: " << oldThread->getName() << " to: " << nextThread->getName());
     
@@ -272,16 +265,13 @@ Scheduler::Print()
 }
 
 //---------------------------------------------------------
-//模擬FindNextToRun所做的函式,特別為了SRTF
-//因為我們想要進入到readyList->iter裡面作排程 而不是只取list中最前面的那個
 Thread *
 Scheduler::FindSRTFNextToRun (int remainTime)
 {
 
-    ASSERT(kernel->interrupt->getLevel() == IntOff);
+    //ASSERT(kernel->interrupt->getLevel() == IntOff);
 
     if (readyList->IsEmpty()) {
-	//此段與FindNextToRun相同 請參照
 	float res = 0.0;
 	for(int i =0 ;i < waitTimeArr.size(); i++)
 	{
@@ -292,7 +282,6 @@ Scheduler::FindSRTFNextToRun (int remainTime)
 	cout<<"Average Waiting Time : "<< res/(waitTimeArr.size()-1)<<endl;
 	return NULL;
     } else {
-	//回傳適當的thread
 	return	readyList->iter(remainTime);
     }
 }

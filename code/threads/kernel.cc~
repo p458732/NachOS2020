@@ -37,19 +37,15 @@ ThreadedKernel::ThreadedKernel(int argc, char **argv)
         } else if (strcmp(argv[i], "-u") == 0) {
             cout << "Partial usage: nachos [-rs randomSeed]\n";
 	} else if(strcmp(argv[i], "-RR") == 0) {
-	    //設定要使用的排程方法
             type = RR;
         } else if (strcmp(argv[i], "-FCFS") == 0) {
-	    //設定要使用的排程方法
             type = FIFO;
+	    cout<<"FIFIO test....\n";
         } else if (strcmp(argv[i], "-PRIORITY") == 0) {
-	    //設定要使用的排程方法
             type = Priority;
         } else if (strcmp(argv[i], "-SJF") == 0) {
-	    //設定要使用的排程方法
             type = SJF;
         } else if (strcmp(argv[i], "-SRTF") == 0) {
-	    //設定要使用的排程方法
             type = SRTF;
         }
 

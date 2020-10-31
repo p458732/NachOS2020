@@ -59,9 +59,7 @@ Alarm::CallBack()
 	}
     } else {			// there's someone to preempt
 //	kernel->stats->Print();
-//當程式佔用cpu時間太久且排程方法選擇RR與SRTF的時候就要重新選擇要執行的thread
 	if(kernel->scheduler->getSchedulerType() == RR ||kernel->scheduler->getSchedulerType() == SRTF) {
-		
 		interrupt->YieldOnReturn();
 	}
     }

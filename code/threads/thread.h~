@@ -110,11 +110,10 @@ class Thread {
     char* getName() { return (name); }
     void Print() { cout << name; }
     void SelfTest();		// test whether thread impl is working
-		
-    int realBurstTime = 0;//程式真正的burst time
-    int waitTime = 0;// wait Time 
-    int lastTime = 0;// 用來輔助計算wait time 與 burst time
-    int hasInsert = 0;// 在SRTF中模擬程式是否已到達 0=尚未到達 1＝已到達 
+    int realBurstTime = 0;
+    int waitTime = 0;
+    int lastTime = 0;
+    int hasInsert = 0;
   private:
     // some of the private data for this class is listed above
     

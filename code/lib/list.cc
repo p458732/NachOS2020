@@ -380,6 +380,7 @@ SortedList<T>::SelfTest(T *p, int numEntries)
      delete q;
 }
 //------------------------------------------------------------
+//在SRTF中選擇適當的thread 執行
 template <class T>
 T
 List<T>::iter(int remainTime)
@@ -387,18 +388,22 @@ List<T>::iter(int remainTime)
     ListElement<T> *ptr;
     ListElement<T>* temp = first;
     T thing ;
+    //min變數是紀錄目前出現過最短的remain burst time
+    //flag 是因為我們模擬一次只讓一個程式進來 當有程式進來時 flag就會設成false
     int min = 1000000000;
     int flag = 1;
+    //迭代每個thread
     for (ptr = first; ptr != NULL; ptr = ptr->next) {
 
-	
+	//當此次還沒有thread進來 + thread 本身就沒有進來
 	if(flag&&ptr->item->hasInsert==0){
+		//讓這個thread 進來
 		ptr->item->hasInsert = 1;
 		flag = 0;
 	}
 	cout<<ptr->item->getName()<<" RemainBurstTime: "<<ptr->item->getBurstTime()<< " enter: "<< ptr->item->hasInsert<< " \n";
         if(min>ptr->item->getBurstTime()&&ptr->item->hasInsert==1){
-		
+		//紀錄找到的最小burst time的 thread
 		min = ptr->item->getBurstTime();
 		temp = ptr;
 		
@@ -409,9 +414,9 @@ List<T>::iter(int remainTime)
 	cout<<endl;
 
     thing = temp->item;
-
+    //因為temp就是我們所找到的最小remain burst time thread 所以call Remove把他從這個list去掉
     Remove(temp->item); 
-    
+    //回傳找到的thread
     return thing;
 
 }

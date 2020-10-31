@@ -30,12 +30,10 @@ class Scheduler {
 	Scheduler();		// Initialize list of ready threads 
 	Scheduler(SchedulerType type);
 	~Scheduler();				// De-allocate ready list
-	//儲存每個thread的等待時間
 	vector<int> waitTimeArr;
 	void ReadyToRun(Thread* thread);	
     					// Thread can be dispatched.
 	Thread* FindNextToRun();	// Dequeue first thread on the ready 
-	
 	Thread* FindSRTFNextToRun(int remainTime);
 					// list, if any, and return thread.
 	void Run(Thread* nextThread, bool finishing);

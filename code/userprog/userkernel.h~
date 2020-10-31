@@ -33,8 +33,6 @@ class UserProgKernel : public ThreadedKernel {
 // These are public for notational convenience.
     Machine *machine;
     FileSystem *fileSystem;
-//用一個陣列分別去儲存priority burst
-	
     vector<int> priorityTemp;
     vector<int> burstTemp;    
 #ifdef FILESYS
