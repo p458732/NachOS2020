@@ -16,7 +16,6 @@
 #include "filesys.h"
 #include "machine.h"
 #include "synchdisk.h"
-#include<vector>
 class SynchDisk;
 class UserProgKernel : public ThreadedKernel {
   public:
@@ -33,8 +32,7 @@ class UserProgKernel : public ThreadedKernel {
 // These are public for notational convenience.
     Machine *machine;
     FileSystem *fileSystem;
-    vector<int> priorityTemp;
-    vector<int> burstTemp;    
+
 #ifdef FILESYS
     SynchDisk *synchDisk;
 #endif // FILESYS

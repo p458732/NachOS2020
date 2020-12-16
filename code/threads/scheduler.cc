@@ -29,21 +29,9 @@
 int PriorityCompare(Thread *a, Thread *b) {
     if(a->getPriority() == b->getPriority())
         return 0;
-int res =a->getPriority() > b->getPriority() ? 1 : -1;
-	cout<<a->getName()<< " "<< a->getPriority()<<" ";
-	cout<<b->getName()<<" "<<b->getPriority()<<" \n";	
-	
-    return res;
+    return a->getPriority() > b->getPriority() ? 1 : -1;
 }
 
-int JobTimeCompare(Thread *a,Thread *b){
-	if(a->getBurstTime() == b->getBurstTime())
-		return 0;
-	return a->getBurstTime() > b->getBurstTime()?1:-1;
-}
-int FCFSCompare(Thread *a, Thread *b){
-	return 1;
-}
 //----------------------------------------------------------------------
 // Scheduler::Scheduler
 // 	Initialize the list of ready but not running threads.
@@ -61,25 +49,15 @@ Scheduler::Scheduler(SchedulerType type)
 	switch(schedulerType) {
     	case RR:
         	readyList = new List<Thread *>;
-       	 	cout<<"Now using RR\n";
-		break;
+        	break;
     	case SJF:
-		readyList = new SortedList<Thread *>(JobTimeCompare);
-		cout<<"Now using SJF\n";
-			
+		/* todo */
         	break;
     	case Priority:
 		readyList = new SortedList<Thread *>(PriorityCompare);
-        	cout<<"Now using PRIO\n";
-
-		break;
+        	break;
     	case FIFO:
-		readyList = new SortedList<Thread *>(FCFSCompare);
-        	cout<<"Now using FIFO\n";
-		break;
-	case SRTF:
-		readyList = new List<Thread *>;
-		cout<<"Now using SRTF\n";
+		/* todo */
 		break;
    	}
 	toBeDestroyed = NULL;
@@ -108,12 +86,9 @@ Scheduler::ReadyToRun (Thread *thread)
 {
     ASSERT(kernel->interrupt->getLevel() == IntOff);
     DEBUG(dbgThread, "Putting thread on ready list: " << thread->getName());
-    kernel->currentThread->realBurstTime += kernel->stats->totalTicks- kernel->currentThread->lastTime;
-   kernel->currentThread->lastTime = kernel->stats->totalTicks;
+    
     thread->setStatus(READY);
     readyList->Append(thread);
-    Print();
-	cout<<endl;
 }
 
 //----------------------------------------------------------------------
@@ -130,14 +105,6 @@ Scheduler::FindNextToRun ()
     ASSERT(kernel->interrupt->getLevel() == IntOff);
 
     if (readyList->IsEmpty()) {
-	float res = 0.0;
-	for(int i =0 ;i < waitTimeArr.size(); i++)
-	{
-		cout<< waitTimeArr[i]<<" ";
-		res+=waitTimeArr[i];
-	}
-	cout<<endl;
-	cout<<"Average Waiting Time : "<< res/(waitTimeArr.size()-1)<<endl;
 	return NULL;
     } else {
     	return readyList->RemoveFront();
@@ -187,8 +154,7 @@ Scheduler::Run (Thread *nextThread, bool finishing)
 
     kernel->currentThread = nextThread;  // switch to the next thread
     nextThread->setStatus(RUNNING);      // nextThread is now running
-   kernel->currentThread->waitTime += kernel->stats->totalTicks- kernel->currentThread->lastTime;
-   kernel->currentThread->lastTime = kernel->stats->totalTicks;  
+    
     DEBUG(dbgThread, "Switching from: " << oldThread->getName() << " to: " << nextThread->getName());
     
     // This is a machine-dependent assembly language routine defined 
@@ -245,25 +211,3 @@ Scheduler::Print()
     cout << "Ready list contents:\n";
     readyList->Apply(ThreadPrint);
 }
-
-//---------------------------------------------------------
-Thread *
-Scheduler::FindSRTFNextToRun (int remainTime)
-{
-    ASSERT(kernel->interrupt->getLevel() == IntOff);
-
-    if (readyList->IsEmpty()) {
-	float res = 0.0;
-	for(int i =0 ;i < waitTimeArr.size(); i++)
-	{
-		cout<< waitTimeArr[i]<<" ";
-		res+=waitTimeArr[i];
-	}
-	cout<<endl;
-	cout<<"Average Waiting Time : "<< res/(waitTimeArr.size()-1)<<endl;
-	return NULL;
-    } else {
-	return	readyList->iter(remainTime);
-    }
-}
-

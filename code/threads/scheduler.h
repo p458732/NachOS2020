@@ -12,7 +12,7 @@
 #include "copyright.h"
 #include "list.h"
 #include "thread.h"
-#include <vector>
+
 // The following class defines the scheduler/dispatcher abstraction -- 
 // the data structures and operations needed to keep track of which 
 // thread is running, and which threads are ready but not running.
@@ -21,8 +21,7 @@ enum SchedulerType {
         RR,     // Round Robin
         SJF,
         Priority,
-	FIFO,
-	SRTF
+	FIFO
 };
 
 class Scheduler {
@@ -30,11 +29,10 @@ class Scheduler {
 	Scheduler();		// Initialize list of ready threads 
 	Scheduler(SchedulerType type);
 	~Scheduler();				// De-allocate ready list
-	vector<int> waitTimeArr;
+
 	void ReadyToRun(Thread* thread);	
     					// Thread can be dispatched.
 	Thread* FindNextToRun();	// Dequeue first thread on the ready 
-	Thread* FindSRTFNextToRun(int remainTime);
 					// list, if any, and return thread.
 	void Run(Thread* nextThread, bool finishing);
 	    				// Cause nextThread to start running
@@ -46,7 +44,7 @@ class Scheduler {
 	SchedulerType getSchedulerType() {return schedulerType;}
 
     // SelfTest for scheduler is implemented in class Thread
-   	int burstTimeToPRIO = 0; 
+    
   private:
 	SchedulerType schedulerType;
 	List<Thread *> *readyList;	// queue of threads that are ready to run,

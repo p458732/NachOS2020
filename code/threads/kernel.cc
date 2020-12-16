@@ -36,19 +36,15 @@ ThreadedKernel::ThreadedKernel(int argc, char **argv)
 	    i++;
         } else if (strcmp(argv[i], "-u") == 0) {
             cout << "Partial usage: nachos [-rs randomSeed]\n";
-	} else if(strcmp(argv[i], "-RR") == 0) {
+	} else if(strcmp(argv[i], "RR") == 0) {
             type = RR;
-        } else if (strcmp(argv[i], "-FCFS") == 0) {
+        } else if (strcmp(argv[i], "FCFS") == 0) {
             type = FIFO;
-	    cout<<"FIFIO test....\n";
-        } else if (strcmp(argv[i], "-PRIORITY") == 0) {
+        } else if (strcmp(argv[i], "PRIORITY") == 0) {
             type = Priority;
-        } else if (strcmp(argv[i], "-SJF") == 0) {
+        } else if (strcmp(argv[i], "SJF") == 0) {
             type = SJF;
-        } else if (strcmp(argv[i], "-SRTF") == 0) {
-            type = SRTF;
         }
-
     }
 }
 

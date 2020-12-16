@@ -58,8 +58,8 @@ Alarm::CallBack()
 	    timer->Disable();	// turn off the timer
 	}
     } else {			// there's someone to preempt
-//	kernel->stats->Print();
-	if(kernel->scheduler->getSchedulerType() == RR ||kernel->scheduler->getSchedulerType() == SRTF) {
+	if(kernel->scheduler->getSchedulerType() == RR ||
+            kernel->scheduler->getSchedulerType() == Priority ) {
 		interrupt->YieldOnReturn();
 	}
     }
