@@ -132,13 +132,6 @@ class Machine {
     TranslationEntry *pageTable;
     unsigned int pageTableSize;
     bool ReadMem(int addr, int size, int* value);
-    bool usedPhyPage[NumPhysPages];
-    bool usedVirPage[NumPhysPages];
-    int ID_num;
-    int phyPageName[NumPhysPages];
-    int sector_number;
-
-    TranslationEntry *main_tab[NumPhyPages];
   private:
 
 // Routines internal to the machine simulation -- DO NOT call these directly
