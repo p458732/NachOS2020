@@ -6,7 +6,7 @@ main()
 		
                 for (n=20;n<=100;n++){
 			arr[n] = n;
-			temp +=arr[n];
+			temp +=arr[n]
                         PrintInt(temp);
 		}
 		return 0;

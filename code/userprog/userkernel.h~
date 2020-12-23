@@ -28,7 +28,7 @@ class UserProgKernel : public ThreadedKernel {
     void Run();			// do kernel stuff 
 
     void SelfTest();		// test whether kernel is working
-    int pageSwapMethodNum = 0;
+    int test;
 // These are public for notational convenience.
     Machine *machine;
     FileSystem *fileSystem;
