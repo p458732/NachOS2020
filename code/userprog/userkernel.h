@@ -32,7 +32,7 @@ class UserProgKernel : public ThreadedKernel {
 // These are public for notational convenience.
     Machine *machine;
     FileSystem *fileSystem;
-	SynchDisk *vm_Disk;
+	SynchDisk *vm_Disk; // 作為virtural memory 的disk
 #ifdef FILESYS
     SynchDisk *synchDisk;
 #endif // FILESYS

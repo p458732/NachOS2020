@@ -85,7 +85,8 @@ ExceptionHandler(ExceptionType which)
 	    }
 	    break;
 	case PageFaultException:
-		kernel->machine->WriteRegister(PCReg,kernel->machine->ReadRegister((PCReg) - 4));
+		kernel->machine->WriteRegister(PCReg,kernel->machine->ReadRegiste
+r((PCReg) - 4));
 
 	    break;
 	default:

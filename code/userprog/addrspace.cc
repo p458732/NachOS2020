@@ -103,16 +103,19 @@ AddrSpace::Load(char *fileName)
     ASSERT(noffH.noffMagic == NOFFMAGIC);
 
 // how big is address space?
+
+
     size = noffH.code.size + noffH.initData.size + noffH.uninitData.size 
 			+ UserStackSize;	// we need to increase the size
 						// to leave room for the stack
-    numPages = divRoundUp(size, PageSize);
+cout<< "size"<<size<<endl;    
+numPages = divRoundUp(size, PageSize);
 //	cout << "number of pages of " << fileName<< " is "<<numPages<<endl;
 
 	
 numPages = divRoundUp(size,PageSize);
 pageTable =  new TranslationEntry[numPages];
-    size = numPages * PageSize;
+    size = numPages * PageSize; 
 
     
     
@@ -128,16 +131,18 @@ pageTable =  new TranslationEntry[numPages];
 
 // then, copy in the code and data segments into memory
 	if (noffH.code.size > 0) {
+	
         //DEBUG(dbgAddr, "Initializing code segment.");
 	//DEBUG(dbgAddr, noffH.code.virtualAddr << ", " << noffH.code.size);
-
+	// 這邊我們是一次檢查一個page 當實體記憶體滿的時候則寫入到disk
 	for(unsigned int i=0, j=0; i<numPages; i++){
 	j=0;
+			// 尋找實體memory中空閒的memory
 		   while(kernel->machine->usedPhyPage[j]!=FALSE&&j<NumPhysPages){j++;}
 		   
-	
+			// 當實體memory有空時 直接插入進實體memory
 		if (j<NumPhysPages){
-		
+			// 設定page的訊息
 			kernel->machine->usedPhyPage[j] = true;
 			pageTable[i].physicalPage = j; 
 			pageTable[i].valid = true;
@@ -145,35 +150,48 @@ pageTable =  new TranslationEntry[numPages];
 			pageTable[i].dirty = false;
 			pageTable[i].readOnly = false;
 			pageTable[i].lastRefTime++;
+			// 寫入進主記憶體
 			executable->ReadAt(&(kernel->machine->mainMemory[j*PageSize]), PageSize, noffH.code.inFileAddr+(i*PageSize));
 		}
 		else{
-			
-			char * buf;
+			//  如果主記憶體滿了則我們需要寫入進disk
+			char * buf; // buffer 用來當作緩衝區
 			buf = new char[PageSize];
-			k = 0;
+			k = 0; // 用k當作index去搜尋disk中第一塊空閒的地方
 			while(kernel->machine->usedVirPage[k]==true) {k++;}
-			
+			//設定page的資訊
 			kernel->machine->usedVirPage[k] = true;
+			
 			pageTable[i].virtualPage= k;
 			pageTable[i].valid = false;
 			pageTable[i].use = false;
 			pageTable[i].dirty = false;
 			pageTable[i].readOnly = false;
 			pageTable[i].ID=ID;
-			
+			// 從disk寫入到buffer
 			executable->ReadAt(buf, PageSize, noffH.code.inFileAddr+(i*PageSize));
+			// 從buffer 寫入 virtural memory
 			kernel->vm_Disk->WriteSector(k,buf);
 			
 		
 	    }
-        	
+	// for protect the code section
+	// if we swap the page of code section may occur weird bugs
+	pageTable[0].protectdNum =(noffH.code.size/PageSize) + 1;
+	kernel->machine->fifo = (noffH.code.size/PageSize) + 1;
+	for(int k = 0; k< (noffH.code.size/PageSize) + 1; k++)
+	{
+	pageTable[k].lastRefTime++;
+	pageTable[0].protectdNum=0;
+	}	
+			
     }
+	
 }
 	if (noffH.initData.size > 0) {
         //DEBUG(dbgAddr, "Initializing data segment.");
 	//DEBUG(dbgAddr, noffH.initData.virtualAddr << ", " << noffH.initData.size);
-        executable->ReadAt(&(kernel->machine->mainMemory[noffH.initData.virtualAddr]),noffH.initData.size, noffH.initData.inFileAddr);
+         // executable->ReadAt(&(kernel->machine->mainMemory[noffH.initData.virtualAddr]),noffH.initData.size, noffH.initData.inFileAddr);
     }
 
     delete executable;			// close file

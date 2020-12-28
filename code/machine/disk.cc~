@@ -138,6 +138,7 @@ Disk::WriteRequest(int sectorNumber, char* data)
     ASSERT((sectorNumber >= 0) && (sectorNumber < NumSectors));
     
     DEBUG(dbgDisk, "Writing to sector " << sectorNumber);
+    cout<<"sectorNumber "<< sectorNumber<<endl;
     cout<<"NumSectors "<< NumSectors<<endl;
     Lseek(fileno, SectorSize * sectorNumber + MagicSize, 0);
     WriteFile(fileno, data, SectorSize);

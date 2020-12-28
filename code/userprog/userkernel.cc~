@@ -47,7 +47,7 @@ UserProgKernel::UserProgKernel(int argc, char **argv)
 		pageSwapMethodNum= 0;
 	}
 	else if (strcmp(argv[i], "--LRU") == 0){
-		machine -> pageSwapMethod = 1;
+		pageSwapMethodNum = 1;
 	}
     }
 }

@@ -131,11 +131,11 @@ class Machine {
     TranslationEntry *pageTable;
     unsigned int pageTableSize;
     bool ReadMem(int addr, int size, int* value);
-    bool usedPhyPage[NumPhysPages];//record which the page in the main memory is used.
-    bool usedVirPage[NumPhysPages];
+    bool usedPhyPage[NumPhysPages];//紀錄physical address 的page
+    bool usedVirPage[2000];// 紀錄virtural address的page
     int  ID_num;
     int sector_number;//record which sector the disk is saving
-    int fifo = 0;
+    int fifo = 0;// FIFO的計數器
     int  pageSwapMethod;// 0 => FIFO 1 =>LRU
     
   private:

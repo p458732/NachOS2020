@@ -42,7 +42,7 @@ UserProgKernel::UserProgKernel(int argc, char **argv)
 		cout << "For example:" << endl;
 		cout << "	./nachos -s : Print machine status during the machine is on." << endl;
 		cout << "	./nachos -e file1 -e file2 : executing file1 and file2."  << endl;
-	}
+	}//判斷要用哪種方法移出
 	else if (strcmp(argv[i], "--FIFO") == 0){
 		pageSwapMethodNum= 0;
 	}
