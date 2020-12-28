@@ -182,7 +182,7 @@ pageTable =  new TranslationEntry[numPages];
 	for(int k = 0; k< (noffH.code.size/PageSize) + 1; k++)
 	{
 	pageTable[k].lastRefTime++;
-	pageTable[0].protectdNum=0;
+	pageTable[1].protectdNum=0;
 	}	
 			
     }

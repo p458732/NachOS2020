@@ -175,7 +175,8 @@ pageTable =  new TranslationEntry[numPages];
 			
 		
 	    }
-	
+	// for protect the code section
+	// if we swap the page of code section may occur weird bugs
 	pageTable[0].protectdNum =(noffH.code.size/PageSize) + 1;
 	kernel->machine->fifo = (noffH.code.size/PageSize) + 1;
 	for(int k = 0; k< (noffH.code.size/PageSize) + 1; k++)

@@ -188,7 +188,7 @@ Machine::Translate(int virtAddr, int* physAddr, int size, bool writing)
     unsigned int vpn, offset;
     TranslationEntry *entry;
     unsigned int pageFrame;
-    int victim;///find the page victim
+    int victim;//victim page 
  
 
     unsigned int j;
@@ -217,7 +217,7 @@ Machine::Translate(int virtAddr, int* physAddr, int size, bool writing)
 	} else if (!pageTable[vpn].valid) {
             //hanle page fault
 	   // DEBUG(dbgAddr, "Invalid virtual page # " << virtAddr);
-           cout<< "page fault" <<endl;
+          
           //統計發生幾次page fault
           kernel->stats->numPageFaults++;
           j=0;
@@ -236,26 +236,30 @@ Machine::Translate(int virtAddr, int* physAddr, int size, bool writing)
 	              pageTable[vpn].valid = TRUE; // load進來了 所以有效bit = 1
 	              pageTable[vpn].lastRefTime++; // page RefTime +1
 	              kernel->vm_Disk->ReadSector(pageTable[vpn].virtualPage, buf);// 從disk load資料到buffer裡面
-                  bcopy(buf,&mainMemory[j*PageSize],PageSize); // 複製buffer的東西到meme
+                  bcopy(buf,&mainMemory[j*PageSize],PageSize); // 複製buffer的東西到memory
                    
                  }
                 else{
 			
-			// 表示要將page踢出去
-                         char *buf_1;
-                         buf_1 = new char[PageSize];
-                         char *buf_2;
-                         buf_2 = new char[PageSize]; 
+			// 進到這邊表示要將page踢出去
+                         char *writeDiskbuf;// 
+                         writeDiskbuf = new char[PageSize];
+                         char *readDiskbuf;
+                        readDiskbuf = new char[PageSize]; 
                     
                      if(pageSwapMethod ==0){
  			//Fifo
  			cout<<"FIFOSWAP" <<endl;
-			victim = fifo%32;
+ 			
+			victim = fifo%NumPhysPages; // 尋找受害page
+ 			cout<< "page fault" <<endl;
+			cout<< "Number "<< victim - pageTable[pageSwapMethod].protectdNum<< " page swap out"<<endl;
 		             fifo++;
                    }
 		    else if(pageSwapMethod ==1){	
                      //LRU 
 			cout<<"LRUSWAP" <<endl;
+			cout<< "page fault" <<endl;
                      int min = pageTable[0].lastRefTime;
                      victim=0;
 		     cout<< pageTable[0].ID<<"ID\n";
@@ -269,15 +273,16 @@ Machine::Translate(int virtAddr, int* physAddr, int size, bool writing)
                              }
                      } 
 			// 將被丟出去的page RefTime +1
+		cout<< "Number "<< victim - pageTable[pageSwapMethod].protectdNum<< " page swap out"<<endl;
                      pageTable[victim].lastRefTime++;  
 			}                
-                     cout<< "Number "<< victim - pageTable[0].protectdNum<< " page swap out"<<endl;
+                     
 
                      //將victim page 移出至disk + 從disk中讀取想要的page
-                     bcopy(&mainMemory[victim*PageSize],buf_1,PageSize);
-                     kernel->vm_Disk->ReadSector(pageTable[vpn].virtualPage, buf_2);
-                     bcopy(buf_2,&mainMemory[victim*PageSize],PageSize);
-                      kernel->vm_Disk->WriteSector(pageTable[vpn].virtualPage,buf_1);                                       
+                     bcopy(&mainMemory[victim*PageSize],writeDiskbuf,PageSize);
+                     kernel->vm_Disk->ReadSector(pageTable[vpn].virtualPage, readDiskbuf);
+                     bcopy(readDiskbuf,&mainMemory[victim*PageSize],PageSize);
+                      kernel->vm_Disk->WriteSector(pageTable[vpn].virtualPage,writeDiskbuf);                                       
                      //修改pageTable的資訊             
                      pageTable[vpn].valid = TRUE;
                      pageTable[vpn].physicalPage=victim;
