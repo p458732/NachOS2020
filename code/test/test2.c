@@ -5,7 +5,7 @@ main()
         {
                 int     n , temp;
 		
-                for (n=1000;n<1250;n++){
+                for (n=1000;n<1050;n++){
 			
 			arr[n] = n-1000;
 			 temp +=arr[n];
